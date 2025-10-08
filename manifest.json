@@ -1,0 +1,35 @@
+{
+    "manifest_version": 3,
+    "name": "Jira Testops Link Redirect",
+    "version": "1.0",
+    "icons": {
+        "16": "icons/logo16.png",
+        "32": "icons/logo32.png",
+        "48": "icons/logo48.png",
+        "128": "icons/logo128.png"
+    },
+    "permissions": [
+        "tabs"
+    ],
+    "host_permissions": [
+        "https://jira.moscow.alfaintra.net/*",
+        "https://testops.moscow.alfaintra.net/*"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://jira.moscow.alfaintra.net/*",
+                "https://testops.moscow.alfaintra.net/*"
+            ],
+            "js": [
+                "content.js"
+            ],
+            "all_frames": true,
+            "run_at": "document_idle"
+        }
+    ],
+    "background": {
+        "service_worker": "service-worker.js",
+        "type": "module"
+    }
+}
