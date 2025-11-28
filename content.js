@@ -1,5 +1,6 @@
 const REDIRECT_PATH = '/iframe/issue-tracker-testcase/';
 const TARGET_BASE = 'https://testops.moscow.alfaintra.net/project/163/test-cases/';
+
 function processLink(linkElement) {
     try {
         const url = new URL(linkElement.href);
@@ -19,7 +20,7 @@ function processLink(linkElement) {
 }
 
 function handleClick(e) {
-    if (e.button === 2) return;
+    if (e.button !== 0 && e.button !== 1) return;
 
     const link = e.target.closest('a[href*="/iframe/issue-tracker-testcase/"]');
     if (!link) return;
@@ -37,16 +38,6 @@ function handleClick(e) {
         url: newUrl
     });
 }
-
-document.addEventListener('contextmenu', (e) => {
-    const link = e.target.closest('a[href*="/iframe/issue-tracker-testcase/"]');
-    if (link) {
-        chrome.runtime.sendMessage({
-            action: "storeLink",
-            url: link.href
-        });
-    }
-}, true);
 
 document.addEventListener('click', handleClick, true);
 document.addEventListener('auxclick', handleClick, true);

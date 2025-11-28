@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
-    "name": "Jira Testops Link Redirect",
-    "version": "1.3",
+    "name": "TestOps Improver",
+    "version": "2.0",
     "icons": {
         "16": "icons/logo16.png",
         "32": "icons/logo32.png",
@@ -11,7 +11,8 @@
     "permissions": [
         "tabs",
         "scripting",
-        "contextMenus"
+        "contextMenus",
+        "storage"
     ],
     "host_permissions": [
         "https://jira.moscow.alfaintra.net/*",
@@ -34,5 +35,12 @@
     "background": {
         "service_worker": "service-worker.js",
         "type": "module"
+    },
+    "action": {
+        "default_icon": {
+            "16": "icons/logo16.png",
+            "32": "icons/logo32.png"
+        },
+        "default_title": "Скрыть/Показать боковые панели"
     }
 }
