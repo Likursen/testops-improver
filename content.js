@@ -4,20 +4,19 @@ const SETTINGS_KEY = 'testops_settings';
 let activeSettings = {
     fixCopy: true,
     jiraRedirect: true,
-    smartLinkerEnabled: false,
-    jiraPrefix: ''
+    smartLinkerEnabled: true,
+    jiraPrefix: 'ONECOLLECT'
 };
 
 function updateSettings() {
-    return new Promise((resolve) => {
-        chrome.storage.local.get([SETTINGS_KEY], (data) => {
-            if (data[SETTINGS_KEY]) {
-                activeSettings = data[SETTINGS_KEY];
-            }
-            resolve();
-        });
+    chrome.storage.local.get([SETTINGS_KEY], (data) => {
+        if (data[SETTINGS_KEY]) {
+            activeSettings = data[SETTINGS_KEY];
+        }
     });
 }
+
+updateSettings();
 
 chrome.storage.onChanged.addListener((changes, area) => {
     if (area === 'local' && changes[SETTINGS_KEY]) {
@@ -122,7 +121,6 @@ document.addEventListener('click', handleClick, true);
 document.addEventListener('auxclick', handleClick, true);
 document.addEventListener('keydown', handleKeydown, true);
 
-window.addEventListener('load', async () => {
-    await updateSettings();
+window.addEventListener('load', () => {
     setTimeout(smartLinker, 3000);
 });

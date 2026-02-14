@@ -3,8 +3,8 @@ const defaultSettings = {
     fixCopy: true,
     jiraRedirect: true,
     focusModeEnabled: true,
-    smartLinkerEnabled: false,
-    jiraPrefix: ''
+    smartLinkerEnabled: true,
+    jiraPrefix: 'ONECOLLECT'
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     element.checked = settings[key] !== undefined ? settings[key] : defaultSettings[key];
                     element.addEventListener('change', (e) => saveSettings(key, e.target.checked));
                 } else {
-                    element.value = settings[key] || '';
+                    element.value = settings[key] || defaultSettings[key];
                     element.addEventListener('input', (e) => saveSettings(key, e.target.value));
                 }
             }

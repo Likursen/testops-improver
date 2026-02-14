@@ -2,7 +2,7 @@ const SETTINGS_KEY = 'testops_settings';
 
 async function updateContextMenu() {
     const data = await chrome.storage.local.get([SETTINGS_KEY]);
-    const settings = data[SETTINGS_KEY] || { jiraRedirect: true, fixCopy: true, focusModeEnabled: true, smartLinkerEnabled: false, jiraPrefix: '' };
+    const settings = data[SETTINGS_KEY] || { jiraRedirect: true, fixCopy: true, focusModeEnabled: true, smartLinkerEnabled: true, jiraPrefix: 'ONECOLLECT' };
     
     chrome.contextMenus.removeAll(() => {
         if (settings.jiraRedirect) {
@@ -41,16 +41,16 @@ chrome.runtime.onInstalled.addListener(async () => {
         jiraRedirect: true, 
         fixCopy: true, 
         focusModeEnabled: true, 
-        smartLinkerEnabled: false, 
-        jiraPrefix: '' 
+        smartLinkerEnabled: true, 
+        jiraPrefix: 'ONECOLLECT' 
     };
 
-    if (!data[SETTINGS_KEY]) {
-        await chrome.storage.local.set({ [SETTINGS_KEY]: defaultSettings });
-    } else {
-        const newSettings = { ...defaultSettings, ...data[SETTINGS_KEY] };
-        await chrome.storage.local.set({ [SETTINGS_KEY]: newSettings });
-    }
+    const newSettings = data[SETTINGS_KEY] ? { ...defaultSettings, ...data[SETTINGS_KEY] } : defaultSettings;
+    await chrome.storage.local.set({ [SETTINGS_KEY]: newSettings });
+    updateContextMenu();
+});
+
+chrome.runtime.onStartup.addListener(() => {
     updateContextMenu();
 });
 
