@@ -39,5 +39,22 @@ function handleClick(e) {
     });
 }
 
+function handleKeydown(e) {
+    const isMac = navigator.platform.toUpperCase().indexOf('MAC') !== -1;
+    const modifier = isMac ? e.metaKey : e.ctrlKey;
+
+    if (modifier && e.key.toLowerCase() === 'c') {
+        const selectedText = window.getSelection().toString();
+        if (selectedText) {
+            e.stopImmediatePropagation();
+            navigator.clipboard.writeText(selectedText).then(() => {
+            }).catch(err => {
+                console.error('Copy error:', err);
+            });
+        }
+    }
+}
+
 document.addEventListener('click', handleClick, true);
 document.addEventListener('auxclick', handleClick, true);
+document.addEventListener('keydown', handleKeydown, true);
