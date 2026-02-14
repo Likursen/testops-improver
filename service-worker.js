@@ -2,7 +2,12 @@ const SETTINGS_KEY = 'testops_settings';
 
 async function updateContextMenu() {
     const data = await chrome.storage.local.get([SETTINGS_KEY]);
-    const settings = data[SETTINGS_KEY] || { jiraRedirect: true, smartLinkerEnabled: true, defaultProjectId: '' };
+    const settings = data[SETTINGS_KEY] || { 
+        jiraRedirect: true, 
+        smartLinkerEnabled: true, 
+        searchByIdEnabled: true, 
+        defaultProjectId: '' 
+    };
     
     const menuItems = [
         {
@@ -20,7 +25,7 @@ async function updateContextMenu() {
                 "https://jira.moscow.alfaintra.net/*",
                 "https://testops.moscow.alfaintra.net/*"
             ],
-            enabled: true
+            enabled: settings.searchByIdEnabled
         },
         {
             id: 'open-settings',
@@ -59,7 +64,8 @@ chrome.runtime.onInstalled.addListener(async () => {
     const data = await chrome.storage.local.get([SETTINGS_KEY]);
     const defaultSettings = { 
         jiraRedirect: true, fixCopy: true, focusModeEnabled: true, 
-        smartLinkerEnabled: true, jiraPrefix: '', defaultProjectId: '' 
+        smartLinkerEnabled: true, searchByIdEnabled: true, 
+        jiraPrefix: '', defaultProjectId: '' 
     };
     const newSettings = data[SETTINGS_KEY] ? { ...defaultSettings, ...data[SETTINGS_KEY] } : defaultSettings;
     await chrome.storage.local.set({ [SETTINGS_KEY]: newSettings });

@@ -4,6 +4,7 @@ const defaultSettings = {
     jiraRedirect: true,
     focusModeEnabled: true,
     smartLinkerEnabled: true,
+    searchByIdEnabled: true,
     jiraPrefix: '',
     defaultProjectId: ''
 };
