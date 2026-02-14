@@ -4,13 +4,13 @@ const defaultSettings = {
     jiraRedirect: true,
     focusModeEnabled: true,
     smartLinkerEnabled: true,
-    jiraPrefix: 'ONECOLLECT'
+    jiraPrefix: 'ONECOLLECT',
+    defaultProjectId: '163'
 };
 
 document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.local.get([SETTINGS_KEY], (result) => {
         const settings = result[SETTINGS_KEY] || defaultSettings;
-        
         Object.keys(defaultSettings).forEach(key => {
             const element = document.getElementById(key);
             if (element) {

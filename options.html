@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>TestOps Improver Settings</title>
@@ -11,60 +11,59 @@
         <div>
             <div class="title-row">
                 <h2>TestOps Improver</h2>
-                <span class="meta-info">v4.0</span>
+                <span class="meta-info">v5.0</span>
             </div>
             <span class="meta-info">Developed by DimaK</span>
         </div>
     </div>
-
     <div class="content">
         <div class="setting-row">
             <div>
                 <span class="label">Focus Mode</span>
-                <span class="desc">Включает скрытие бокового дерева тестов и панели с информацией при клике ЛКМ по иконке расширения.</span>
+                <span class="desc">Скрытие бокового дерева и панелей при клике по иконке.</span>
             </div>
             <input type="checkbox" id="focusModeEnabled">
         </div>
-
         <div class="divider"></div>
-
         <div class="setting-row">
             <div>
                 <span class="label">Fix Copy (Cmd+C / Ctrl+C)</span>
-                <span class="desc">Принудительное копирование текста из тест-кейса.</span>
+                <span class="desc">Принудительное копирование текста.</span>
             </div>
             <input type="checkbox" id="fixCopy">
         </div>
-
         <div class="divider"></div>
-        
         <div class="setting-row">
             <div>
                 <span class="label">Jira Redirect</span>
-                <span class="desc">Перенаправляет при клике ЛКМ по тест-кейсу в Jira на полные страницы в ТестОпс.</span>
+                <span class="desc">Переход из Jira в ТестОпс по клику.</span>
             </div>
             <input type="checkbox" id="jiraRedirect">
         </div>
-
         <div class="divider"></div>
-
         <div class="setting-row">
             <div>
                 <span class="label">Smart Linker</span>
-                <span class="desc">Превращает текстовые ключи задач в Jira в кликабельные ссылки.</span>
+                <span class="desc">Превращает текстовые ключи в ссылки.</span>
             </div>
             <input type="checkbox" id="smartLinkerEnabled">
         </div>
-
         <div class="setting-row">
             <div>
                 <span class="label">Jira Project Prefix</span>
-                <span class="desc">Префикс задач (например, ONECOLLECT).</span>
+                <span class="desc">Префикс (например, ONECOLLECT).</span>
             </div>
-            <input type="text" id="jiraPrefix" style="width: 100px; padding: 5px; border: 1px solid #e5e5e5; border-radius: 4px; font-size: 12px; outline: none;">
+            <input type="text" id="jiraPrefix" style="width: 120px; padding: 5px; border: 1px solid #e5e5e5; border-radius: 4px; outline: none;">
+        </div>
+        <div class="divider"></div>
+        <div class="setting-row">
+            <div>
+                <span class="label">Default Project ID</span>
+                <span class="desc">ID проекта для поиска по номеру кейса.</span>
+            </div>
+            <input type="text" id="defaultProjectId" style="width: 120px; padding: 5px; border: 1px solid #e5e5e5; border-radius: 4px; outline: none;">
         </div>
     </div>
-
     <script src="options.js"></script>
 </body>
 </html>

@@ -2,7 +2,7 @@ const SETTINGS_KEY = 'testops_settings';
 
 async function updateContextMenu() {
     const data = await chrome.storage.local.get([SETTINGS_KEY]);
-    const settings = data[SETTINGS_KEY] || { jiraRedirect: true, fixCopy: true, focusModeEnabled: true, smartLinkerEnabled: true, jiraPrefix: 'ONECOLLECT' };
+    const settings = data[SETTINGS_KEY] || { jiraRedirect: true, smartLinkerEnabled: true, defaultProjectId: '163' };
     
     chrome.contextMenus.removeAll(() => {
         if (settings.jiraRedirect) {
@@ -14,6 +14,15 @@ async function updateContextMenu() {
             });
         }
         chrome.contextMenus.create({
+            id: 'search-by-id',
+            title: "Найти кейс по ID",
+            contexts: ["selection"],
+            documentUrlPatterns: [
+                "https://jira.moscow.alfaintra.net/*",
+                "https://testops.moscow.alfaintra.net/*"
+            ]
+        });
+        chrome.contextMenus.create({
             id: 'open-settings',
             title: "Настройки TestOps Improver",
             contexts: ["action"]
@@ -21,56 +30,52 @@ async function updateContextMenu() {
     });
 }
 
-function processLinkDynamic(linkUrl) {
+function processLinkDynamic(linkUrl, defaultId) {
     try {
         const url = new URL(linkUrl);
         const pathParts = url.pathname.split('/');
         const projectIndex = pathParts.indexOf('project');
-        const projectId = (projectIndex !== -1 && pathParts[projectIndex + 1]) ? pathParts[projectIndex + 1] : '163';
+        const projectId = (projectIndex !== -1 && pathParts[projectIndex + 1]) ? pathParts[projectIndex + 1] : defaultId;
         const targetIndex = pathParts.indexOf('issue-tracker-testcase');
         const targetId = pathParts[targetIndex + 1];
         return `https://testops.moscow.alfaintra.net/project/${projectId}/test-cases/${targetId}`;
-    } catch (error) {
-        return null;
-    }
+    } catch (e) { return null; }
 }
 
 chrome.runtime.onInstalled.addListener(async () => {
     const data = await chrome.storage.local.get([SETTINGS_KEY]);
     const defaultSettings = { 
-        jiraRedirect: true, 
-        fixCopy: true, 
-        focusModeEnabled: true, 
-        smartLinkerEnabled: true, 
-        jiraPrefix: 'ONECOLLECT' 
+        jiraRedirect: true, fixCopy: true, focusModeEnabled: true, 
+        smartLinkerEnabled: true, jiraPrefix: 'ONECOLLECT', defaultProjectId: '163' 
     };
-
     const newSettings = data[SETTINGS_KEY] ? { ...defaultSettings, ...data[SETTINGS_KEY] } : defaultSettings;
     await chrome.storage.local.set({ [SETTINGS_KEY]: newSettings });
     updateContextMenu();
 });
 
-chrome.runtime.onStartup.addListener(() => {
-    updateContextMenu();
-});
-
+chrome.runtime.onStartup.addListener(updateContextMenu);
 chrome.storage.onChanged.addListener((changes) => {
     if (changes[SETTINGS_KEY]) updateContextMenu();
 });
 
 chrome.runtime.onMessage.addListener((message) => {
-    if (message.action === "createTab") {
-        chrome.tabs.create({ url: message.url, active: true });
-    } else if (message.action === "updateTab") {
-        chrome.tabs.update({ url: message.url });
-    }
+    if (message.action === "createTab") chrome.tabs.create({ url: message.url, active: true });
+    else if (message.action === "updateTab") chrome.tabs.update({ url: message.url });
     return true;
 });
 
-chrome.contextMenus.onClicked.addListener((info) => {
+chrome.contextMenus.onClicked.addListener(async (info) => {
+    const data = await chrome.storage.local.get([SETTINGS_KEY]);
+    const settings = data[SETTINGS_KEY] || { defaultProjectId: '163' };
     if (info.menuItemId === 'redirect-context-menu' && info.linkUrl) {
-        const newUrl = processLinkDynamic(info.linkUrl);
-        if (newUrl) chrome.tabs.create({ url: newUrl, active: true });
+        const url = processLinkDynamic(info.linkUrl, settings.defaultProjectId);
+        if (url) chrome.tabs.create({ url, active: true });
+    } else if (info.menuItemId === 'search-by-id' && info.selectionText) {
+        const match = info.selectionText.trim().match(/^#?(\d{1,10})$/);
+        if (match) {
+            const url = `https://testops.moscow.alfaintra.net/project/${settings.defaultProjectId}/test-cases/${match[1]}`;
+            chrome.tabs.create({ url, active: true });
+        }
     } else if (info.menuItemId === 'open-settings') {
         chrome.runtime.openOptionsPage();
     }
@@ -79,11 +84,7 @@ chrome.contextMenus.onClicked.addListener((info) => {
 chrome.action.onClicked.addListener(async (tab) => {
     const data = await chrome.storage.local.get([SETTINGS_KEY]);
     const settings = data[SETTINGS_KEY] || { focusModeEnabled: true };
-    if (!settings.focusModeEnabled) return;
-    if (tab.url && tab.url.includes('/test-cases/')) {
-        chrome.scripting.executeScript({
-            target: { tabId: tab.id },
-            files: ['focus-mode.js']
-        });
+    if (settings.focusModeEnabled && tab.url?.includes('/test-cases/')) {
+        chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ['focus-mode.js'] });
     }
 });
