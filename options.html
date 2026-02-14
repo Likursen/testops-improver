@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>TestOps Improver Settings</title>
+    <link rel="stylesheet" href="options.css">
+</head>
+<body>
+    <div class="header">
+        <img src="icons/logo32.png" alt="logo">
+        <div>
+            <div class="title-row">
+                <h2>TestOps Improver</h2>
+                <span class="meta-info">v3.0</span>
+            </div>
+            <span class="meta-info">Developed by DimaK</span>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="setting-row">
+            <div>
+                <span class="label">Focus Mode</span>
+                <span class="desc">Включает скрытие бокового дерева тестов и панели с информацией при клике ЛКМ по иконке расширения.</span>
+            </div>
+            <input type="checkbox" id="focusModeEnabled">
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="setting-row">
+            <div>
+                <span class="label">Fix Copy (Cmd+C / Ctrl+C)</span>
+                <span class="desc">Принудительное копирование текста из тест-кейса.</span>
+            </div>
+            <input type="checkbox" id="fixCopy">
+        </div>
+
+        <div class="divider"></div>
+        
+        <div class="setting-row">
+            <div>
+                <span class="label">Jira Redirect</span>
+                <span class="desc">Перенаправляет при клике ЛКМ по тест-кейсу в Jira на полные страницы в ТестОпс.</span>
+            </div>
+            <input type="checkbox" id="jiraRedirect">
+        </div>
+    </div>
+
+    <script src="options.js"></script>
+</body>
+</html>
