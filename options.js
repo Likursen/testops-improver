@@ -4,8 +4,8 @@ const defaultSettings = {
     jiraRedirect: true,
     focusModeEnabled: true,
     smartLinkerEnabled: true,
-    jiraPrefix: 'ONECOLLECT',
-    defaultProjectId: '163'
+    jiraPrefix: '',
+    defaultProjectId: ''
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     element.checked = settings[key] !== undefined ? settings[key] : defaultSettings[key];
                     element.addEventListener('change', (e) => saveSettings(key, e.target.checked));
                 } else {
-                    element.value = settings[key] || defaultSettings[key];
+                    element.value = settings[key] || '';
                     element.addEventListener('input', (e) => saveSettings(key, e.target.value));
                 }
             }

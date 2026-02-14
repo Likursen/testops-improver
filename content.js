@@ -5,17 +5,19 @@ let activeSettings = {
     fixCopy: true,
     jiraRedirect: true,
     smartLinkerEnabled: true,
-    jiraPrefix: 'ONECOLLECT',
-    defaultProjectId: '163'
+    jiraPrefix: '',
+    defaultProjectId: ''
 };
 
 function updateSettings() {
+    if (!chrome.runtime?.id) return;
     chrome.storage.local.get([SETTINGS_KEY], (data) => {
         if (data[SETTINGS_KEY]) activeSettings = data[SETTINGS_KEY];
     });
 }
 
 updateSettings();
+
 chrome.storage.onChanged.addListener((changes) => {
     if (changes[SETTINGS_KEY]) activeSettings = changes[SETTINGS_KEY].newValue;
 });
@@ -25,7 +27,7 @@ function processLink(linkElement) {
         const url = new URL(linkElement.href);
         const pathParts = url.pathname.split('/');
         const projectIndex = pathParts.indexOf('project');
-        const projectId = (projectIndex !== -1 && pathParts[projectIndex + 1]) ? pathParts[projectIndex + 1] : activeSettings.defaultProjectId;
+        const projectId = (projectIndex !== -1 && pathParts[projectIndex + 1]) ? pathParts[projectIndex + 1] : (activeSettings.defaultProjectId || '163');
         const targetIndex = pathParts.indexOf('issue-tracker-testcase');
         if (targetIndex === -1 || targetIndex >= pathParts.length - 1) return null;
         const targetId = pathParts[targetIndex + 1];
@@ -39,7 +41,7 @@ function handleClick(e) {
     const link = e.target.closest('a[href*="/iframe/issue-tracker-testcase/"]');
     if (!link) return;
     const newUrl = processLink(link);
-    if (!newUrl) return;
+    if (!newUrl || !chrome.runtime?.id) return;
     e.preventDefault();
     e.stopImmediatePropagation();
     const isNewTab = e.button === 1 || e.metaKey || e.ctrlKey;
