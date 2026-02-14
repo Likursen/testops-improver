@@ -10,21 +10,51 @@ let activeSettings = {
     defaultProjectId: ''
 };
 
+const style = document.createElement('style');
+document.documentElement.appendChild(style);
+
 function updateSettings() {
     if (!chrome.runtime?.id) return;
     chrome.storage.local.get([SETTINGS_KEY], (data) => {
-        if (data[SETTINGS_KEY]) activeSettings = data[SETTINGS_KEY];
+        if (data[SETTINGS_KEY]) {
+            activeSettings = data[SETTINGS_KEY];
+            toggleHighlightStyle();
+        }
     });
+}
+
+function toggleHighlightStyle() {
+    if (activeSettings.highlightMatchesEnabled) {
+        style.textContent = `
+            ._5ba4Lq_active ._5ba4Lq_row {
+                background-color: #e82c2c26 !important;
+            }
+        `;
+    } else {
+        style.textContent = '';
+    }
 }
 
 updateSettings();
 
 chrome.storage.onChanged.addListener((changes) => {
-    if (changes[SETTINGS_KEY]) activeSettings = changes[SETTINGS_KEY].newValue;
+    if (changes[SETTINGS_KEY]) {
+        activeSettings = changes[SETTINGS_KEY].newValue;
+        toggleHighlightStyle();
+    }
 });
 
 function applyHighlighting() {
-    if (!activeSettings.highlightMatchesEnabled) return;
+    if (!activeSettings.highlightMatchesEnabled) {
+        const highlightedNodes = document.querySelectorAll("[data-testid='text__tree-node-name']");
+        highlightedNodes.forEach(node => {
+            if (node.style.color === 'red') {
+                node.style.color = '';
+                node.style.fontWeight = '';
+            }
+        });
+        return;
+    }
 
     const sourceValues = new Set();
     const sourceResult = document.evaluate(
@@ -65,7 +95,6 @@ function applyHighlighting() {
     });
 }
 
-// Интервал 100мс для мгновенной реакции на скролл
 setInterval(applyHighlighting, 100);
 
 function processLink(linkElement) {
@@ -91,7 +120,7 @@ function handleClick(e) {
     e.preventDefault();
     e.stopImmediatePropagation();
     const isNewTab = e.button === 1 || e.metaKey || e.ctrlKey;
-    chrome.runtime.sendMessage({ action: isNewTab ? "createTab" : "updateTab", url: newUrl });
+    chrome.runtime.sendMessage({ action: "createTab", url: newUrl });
 }
 
 function smartLinker() {
