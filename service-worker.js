@@ -64,7 +64,7 @@ chrome.runtime.onInstalled.addListener(async () => {
     const data = await chrome.storage.local.get([SETTINGS_KEY]);
     const defaultSettings = { 
         jiraRedirect: true, fixCopy: true, focusModeEnabled: true, 
-        smartLinkerEnabled: true, searchByIdEnabled: true, 
+        smartLinkerEnabled: true, searchByIdEnabled: true, highlightMatchesEnabled: true,
         jiraPrefix: '', defaultProjectId: '' 
     };
     const newSettings = data[SETTINGS_KEY] ? { ...defaultSettings, ...data[SETTINGS_KEY] } : defaultSettings;

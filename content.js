@@ -5,6 +5,7 @@ let activeSettings = {
     fixCopy: true,
     jiraRedirect: true,
     smartLinkerEnabled: true,
+    highlightMatchesEnabled: true,
     jiraPrefix: '',
     defaultProjectId: ''
 };
@@ -21,6 +22,51 @@ updateSettings();
 chrome.storage.onChanged.addListener((changes) => {
     if (changes[SETTINGS_KEY]) activeSettings = changes[SETTINGS_KEY].newValue;
 });
+
+function applyHighlighting() {
+    if (!activeSettings.highlightMatchesEnabled) return;
+
+    const sourceValues = new Set();
+    const sourceResult = document.evaluate(
+        "//*[@data-testid='element__cf-value']/span",
+        document,
+        null,
+        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+        null
+    );
+    for (let i = 0; i < sourceResult.snapshotLength; i++) {
+        const text = sourceResult.snapshotItem(i).textContent;
+        if (text) sourceValues.add(text.trim());
+    }
+
+    const targetResult = document.evaluate(
+        "//*[contains(@data-tree-node-row-id, 'group')]//*[@data-testid='text__tree-node-name']",
+        document,
+        null,
+        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+        null
+    );
+
+    requestAnimationFrame(() => {
+        for (let i = 0; i < targetResult.snapshotLength; i++) {
+            const node = targetResult.snapshotItem(i);
+            const content = node.textContent ? node.textContent.trim() : "";
+            
+            if (sourceValues.size > 0 && sourceValues.has(content)) {
+                if (node.style.color !== 'red') {
+                    node.style.setProperty('color', 'red', 'important');
+                    node.style.setProperty('font-weight', 'bold', 'important');
+                }
+            } else if (node.style.color === 'red') {
+                node.style.color = '';
+                node.style.fontWeight = '';
+            }
+        }
+    });
+}
+
+// Интервал 100мс для мгновенной реакции на скролл
+setInterval(applyHighlighting, 100);
 
 function processLink(linkElement) {
     try {
@@ -95,4 +141,7 @@ function handleKeydown(e) {
 document.addEventListener('click', handleClick, true);
 document.addEventListener('auxclick', handleClick, true);
 document.addEventListener('keydown', handleKeydown, true);
-window.addEventListener('load', () => setTimeout(smartLinker, 3000));
+window.addEventListener('load', () => {
+    setTimeout(smartLinker, 3000);
+    applyHighlighting();
+});

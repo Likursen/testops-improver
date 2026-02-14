@@ -5,6 +5,7 @@ const defaultSettings = {
     focusModeEnabled: true,
     smartLinkerEnabled: true,
     searchByIdEnabled: true,
+    highlightMatchesEnabled: true,
     jiraPrefix: '',
     defaultProjectId: ''
 };
