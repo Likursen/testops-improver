@@ -2,7 +2,9 @@ const SETTINGS_KEY = 'testops_settings';
 const defaultSettings = {
     fixCopy: true,
     jiraRedirect: true,
-    focusModeEnabled: true
+    focusModeEnabled: true,
+    smartLinkerEnabled: false,
+    jiraPrefix: ''
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -10,12 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const settings = result[SETTINGS_KEY] || defaultSettings;
         
         Object.keys(defaultSettings).forEach(key => {
-            const checkbox = document.getElementById(key);
-            if (checkbox) {
-                checkbox.checked = settings[key] !== undefined ? settings[key] : defaultSettings[key];
-                checkbox.addEventListener('change', (e) => {
-                    saveSettings(key, e.target.checked);
-                });
+            const element = document.getElementById(key);
+            if (element) {
+                if (element.type === 'checkbox') {
+                    element.checked = settings[key] !== undefined ? settings[key] : defaultSettings[key];
+                    element.addEventListener('change', (e) => saveSettings(key, e.target.checked));
+                } else {
+                    element.value = settings[key] || '';
+                    element.addEventListener('input', (e) => saveSettings(key, e.target.value));
+                }
             }
         });
     });
