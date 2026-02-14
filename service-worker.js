@@ -1,6 +1,5 @@
-const TARGET_BASE = 'https://testops.moscow.alfaintra.net/project/163/test-cases/';
-const FOCUS_PAGE_PATTERN = /^https:\/\/testops\.moscow\.alfaintra\.net\/project\/163\/test-cases\/\d+/;
 const SETTINGS_KEY = 'testops_settings';
+const FOCUS_PAGE_BASE = 'https://testops.moscow.alfaintra.net/project/';
 
 async function updateContextMenu() {
     const data = await chrome.storage.local.get([SETTINGS_KEY]);
@@ -21,6 +20,23 @@ async function updateContextMenu() {
             contexts: ["action"]
         });
     });
+}
+
+function processLinkDynamic(linkUrl) {
+    try {
+        const url = new URL(linkUrl);
+        const pathParts = url.pathname.split('/');
+        
+        const projectIndex = pathParts.indexOf('project');
+        const projectId = (projectIndex !== -1 && pathParts[projectIndex + 1]) ? pathParts[projectIndex + 1] : '163';
+        
+        const targetIndex = pathParts.indexOf('issue-tracker-testcase');
+        const targetId = pathParts[targetIndex + 1];
+        
+        return `https://testops.moscow.alfaintra.net/project/${projectId}/test-cases/${targetId}`;
+    } catch (error) {
+        return null;
+    }
 }
 
 chrome.runtime.onInstalled.addListener(async () => {
@@ -48,11 +64,10 @@ chrome.runtime.onMessage.addListener((message) => {
 
 chrome.contextMenus.onClicked.addListener((info) => {
     if (info.menuItemId === 'redirect-context-menu' && info.linkUrl) {
-        const url = new URL(info.linkUrl);
-        const pathParts = url.pathname.split('/');
-        const targetIndex = pathParts.indexOf('issue-tracker-testcase');
-        const targetId = pathParts[targetIndex + 1];
-        chrome.tabs.create({ url: `${TARGET_BASE}${targetId}`, active: true });
+        const newUrl = processLinkDynamic(info.linkUrl);
+        if (newUrl) {
+            chrome.tabs.create({ url: newUrl, active: true });
+        }
     } else if (info.menuItemId === 'open-settings') {
         chrome.runtime.openOptionsPage();
     }
@@ -64,7 +79,7 @@ chrome.action.onClicked.addListener(async (tab) => {
 
     if (!settings.focusModeEnabled) return;
 
-    if (tab.url && FOCUS_PAGE_PATTERN.test(tab.url)) {
+    if (tab.url && tab.url.includes('/test-cases/')) {
         chrome.scripting.executeScript({
             target: { tabId: tab.id },
             files: ['focus-mode.js']

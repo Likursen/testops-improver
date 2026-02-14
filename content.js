@@ -1,5 +1,4 @@
 const REDIRECT_PATH = '/iframe/issue-tracker-testcase/';
-const TARGET_BASE = 'https://testops.moscow.alfaintra.net/project/163/test-cases/';
 const SETTINGS_KEY = 'testops_settings';
 
 let activeSettings = {
@@ -27,11 +26,17 @@ function processLink(linkElement) {
     try {
         const url = new URL(linkElement.href);
         const pathParts = url.pathname.split('/');
+        
+        const projectIndex = pathParts.indexOf('project');
+        const projectId = (projectIndex !== -1 && pathParts[projectIndex + 1]) ? pathParts[projectIndex + 1] : '163';
+        
         const targetIndex = pathParts.indexOf('issue-tracker-testcase');
         if (targetIndex === -1 || targetIndex >= pathParts.length - 1) return null;
+        
         const targetId = pathParts[targetIndex + 1];
         if (!/^\d+$/.test(targetId)) return null;
-        return `${TARGET_BASE}${targetId}`;
+
+        return `https://testops.moscow.alfaintra.net/project/${projectId}/test-cases/${targetId}`;
     } catch (error) {
         return null;
     }
