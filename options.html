@@ -11,7 +11,7 @@
         <div>
             <div class="title-row">
                 <h2>TestOps Improver</h2>
-                <span class="meta-info">v6.1</span>
+                <span class="meta-info">v6.2</span>
             </div>
             <span class="meta-info">Developed by DimaK</span>
         </div>
@@ -20,15 +20,15 @@
         <div class="setting-row">
             <div>
                 <span class="label">Focus Mode</span>
-                <span class="desc">Скрытие бокового дерева и панелей при клике по иконке.</span>
+                <span class="desc">Клик по иконке расширения скрывает боковое дерево тестов и правую панель для расширения рабочей области.</span>
             </div>
             <input type="checkbox" id="focusModeEnabled">
         </div>
         <div class="divider"></div>
         <div class="setting-row">
             <div>
-                <span class="label">Fix Copy (Cmd+C / Ctrl+C)</span>
-                <span class="desc">Принудительное копирование текста.</span>
+                <span class="label">Улучшенное копирование</span>
+                <span class="desc">Исправляет проблему копирования текста в TestOps (используйте стандартные Ctrl+C / Cmd+C).</span>
             </div>
             <input type="checkbox" id="fixCopy">
         </div>
@@ -36,15 +36,15 @@
         <div class="setting-row">
             <div>
                 <span class="label">Jira Redirect</span>
-                <span class="desc">Переход из Jira в ТестОпс по клику.</span>
+                <span class="desc">Автоматическое открытие тест-кейсов в новой вкладке TestOps при клике в Jira (ЛКМ, колесико, Ctrl/Cmd+Клик).</span>
             </div>
             <input type="checkbox" id="jiraRedirect">
         </div>
         <div class="divider"></div>
         <div class="setting-row">
             <div>
-                <span class="label">Highlight Tree Matches</span>
-                <span class="desc">Красить красным названия в дереве и менять цвет активной строки.</span>
+                <span class="label">Подсветка в дереве тестов</span>
+                <span class="desc">Окрашивает активную строку мягким красным цветом и выделяет папки в дереве в которых расположен тест.</span>
             </div>
             <input type="checkbox" id="highlightMatchesEnabled">
         </div>
@@ -52,29 +52,29 @@
         <div class="setting-row">
             <div>
                 <span class="label">Smart Linker</span>
-                <span class="desc">Превращает текстовые ключи в ссылки.</span>
+                <span class="desc">Превращает текстовые ключи задач (например, TASK-123) в кликабельные ссылки на Jira.</span>
             </div>
             <input type="checkbox" id="smartLinkerEnabled">
         </div>
         <div class="setting-row">
             <div>
-                <span class="label">Jira Project Prefix</span>
-                <span class="desc">Префикс (например, ONECOLLECT).</span>
+                <span class="label">Префикс задач Jira</span>
+                <span class="desc">Укажите буквенный код проекта (например, ONECOLLECT) для поиска ссылок.</span>
             </div>
             <input type="text" id="jiraPrefix" style="width: 120px; padding: 5px; border: 1px solid #e5e5e5; border-radius: 4px; outline: none;">
         </div>
         <div class="divider"></div>
         <div class="setting-row">
             <div>
-                <span class="label">Search Case by ID</span>
-                <span class="desc">Поиск тест-кейса через контекстное меню.</span>
+                <span class="label">Поиск кейса по ID</span>
+                <span class="desc">Добавляет пункт в контекстное меню для перехода к тесту по выделенному номеру (например, #12345).</span>
             </div>
             <input type="checkbox" id="searchByIdEnabled">
         </div>
         <div class="setting-row">
             <div>
-                <span class="label">TestOps Project ID</span>
-                <span class="desc">ID проекта для поиска по номеру кейса.</span>
+                <span class="label">ID проекта TestOps</span>
+                <span class="desc">Цифровой ID вашего проекта для корректной работы поиска и редиректов.</span>
             </div>
             <input type="text" id="defaultProjectId" style="width: 120px; padding: 5px; border: 1px solid #e5e5e5; border-radius: 4px; outline: none;">
         </div>
